@@ -5,8 +5,8 @@ to leave a company, and explains *why* using feature importance analysis —
 built end-to-end with a trained Random Forest model served through a Flask web app.
 
 # how our UI looks like and works 
-   ![Form](ss1.png)
-   ![Result](ss2.png)
+   ![Form](screenshots/ss1.png)
+   ![Result](screenshots/ss2.png)
 
 
 ## What it does
