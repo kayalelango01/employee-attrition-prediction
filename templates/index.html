@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Attrition Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+
+    <div class="masthead">
+      <h1>Attrition Risk Panel</h1>
+      <div class="tag">Random Forest model · IBM HR dataset</div>
+    </div>
+
+    <form action="/predict" method="POST">
+      <div class="layout">
+
+        <!-- LEFT: input sections -->
+        <div>
+          <div class="section-card">
+            <h2>Personal</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label>Age</label>
+                <input type="number" name="Age" min="18" max="60" value="30" required>
+              </div>
+              <div class="field">
+                <label>Gender</label>
+                <select name="Gender">
+                  {% for opt in dropdowns['Gender'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>Marital Status</label>
+                <select name="MaritalStatus">
+                  {% for opt in dropdowns['MaritalStatus'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>Distance From Home (km)</label>
+                <input type="number" name="DistanceFromHome" min="0" max="50" value="5" required>
+              </div>
+              <div class="field">
+                <label>Education Level (1-5)</label>
+                <input type="number" name="Education" min="1" max="5" value="3" required>
+              </div>
+              <div class="field">
+                <label>Education Field</label>
+                <select name="EducationField">
+                  {% for opt in dropdowns['EducationField'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <h2>Job Details</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label>Department</label>
+                <select name="Department">
+                  {% for opt in dropdowns['Department'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>Job Role</label>
+                <select name="JobRole">
+                  {% for opt in dropdowns['JobRole'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>Job Level (1-5)</label>
+                <input type="number" name="JobLevel" min="1" max="5" value="2" required>
+              </div>
+              <div class="field">
+                <label>Business Travel</label>
+                <select name="BusinessTravel">
+                  {% for opt in dropdowns['BusinessTravel'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>OverTime</label>
+                <select name="OverTime">
+                  {% for opt in dropdowns['OverTime'] %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label>Num Companies Worked</label>
+                <input type="number" name="NumCompaniesWorked" min="0" max="10" value="2" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <h2>Compensation &amp; Tenure</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label>Monthly Income (₹ / $)</label>
+                <input type="number" name="MonthlyIncome" min="1000" max="200000" value="5000" required>
+              </div>
+              <div class="field">
+                <label>Monthly Rate</label>
+                <input type="number" name="MonthlyRate" min="1000" max="30000" value="14000" required>
+              </div>
+              <div class="field">
+                <label>Daily Rate</label>
+                <input type="number" name="DailyRate" min="100" max="1500" value="800" required>
+              </div>
+              <div class="field">
+                <label>Hourly Rate</label>
+                <input type="number" name="HourlyRate" min="30" max="100" value="65" required>
+              </div>
+              <div class="field">
+                <label>Percent Salary Hike (%)</label>
+                <input type="number" name="PercentSalaryHike" min="0" max="30" value="14" required>
+              </div>
+              <div class="field">
+                <label>Stock Option Level (0-3)</label>
+                <input type="number" name="StockOptionLevel" min="0" max="3" value="1" required>
+              </div>
+              <div class="field">
+                <label>Total Working Years</label>
+                <input type="number" name="TotalWorkingYears" min="0" max="40" value="8" required>
+              </div>
+              <div class="field">
+                <label>Years At Company</label>
+                <input type="number" name="YearsAtCompany" min="0" max="40" value="5" required>
+              </div>
+              <div class="field">
+                <label>Years In Current Role</label>
+                <input type="number" name="YearsInCurrentRole" min="0" max="20" value="3" required>
+              </div>
+              <div class="field">
+                <label>Years Since Last Promotion</label>
+                <input type="number" name="YearsSinceLastPromotion" min="0" max="15" value="1" required>
+              </div>
+              <div class="field">
+                <label>Years With Current Manager</label>
+                <input type="number" name="YearsWithCurrManager" min="0" max="20" value="3" required>
+              </div>
+              <div class="field">
+                <label>Training Times Last Year</label>
+                <input type="number" name="TrainingTimesLastYear" min="0" max="6" value="2" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <h2>Satisfaction &amp; Work-Life</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label>Job Satisfaction (1-4)</label>
+                <input type="number" name="JobSatisfaction" min="1" max="4" value="3" required>
+              </div>
+              <div class="field">
+                <label>Environment Satisfaction (1-4)</label>
+                <input type="number" name="EnvironmentSatisfaction" min="1" max="4" value="3" required>
+              </div>
+              <div class="field">
+                <label>Relationship Satisfaction (1-4)</label>
+                <input type="number" name="RelationshipSatisfaction" min="1" max="4" value="3" required>
+              </div>
+              <div class="field">
+                <label>Job Involvement (1-4)</label>
+                <input type="number" name="JobInvolvement" min="1" max="4" value="3" required>
+              </div>
+              <div class="field">
+                <label>Work Life Balance (1-4)</label>
+                <input type="number" name="WorkLifeBalance" min="1" max="4" value="3" required>
+              </div>
+              <div class="field">
+                <label>Performance Rating (1-4)</label>
+                <input type="number" name="PerformanceRating" min="1" max="4" value="3" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: sidebar -->
+        <div class="sidebar">
+          <div class="section-card">
+            <h2>Model Info</h2>
+            <div class="stat-row"><span>Algorithm</span><span>Random Forest</span></div>
+            <div class="stat-row"><span>Trees</span><span>200</span></div>
+            <div class="stat-row"><span>Training records</span><span>~1,470</span></div>
+            <p>Fill in the employee's details and submit to see the predicted attrition risk along with the top factors driving it.</p>
+            <button type="submit" class="submit-btn">Predict Attrition Risk</button>
+          </div>
+            <div class="section-card">
+            <h2>Global Feature Importance</h2>
+            <p style="margin-bottom: 14px;">What the model learned matters most, across all training data.</p>
+            <img src="{{ url_for('static', filename='feature_importance.png') }}"
+                 alt="Feature importance chart"
+                 style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</body>
+</html>

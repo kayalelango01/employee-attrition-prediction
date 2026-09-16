@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+
+    <div class="masthead">
+      <h1>Attrition Risk Panel</h1>
+      <div class="tag">Prediction result</div>
+    </div>
+
+    <div class="section-card">
+      <div class="result-wrap">
+
+        <div class="gauge"
+             style="--pct: {{ confidence }}; --gauge-color: {{ 'var(--coral)' if prediction == 1 else 'var(--emerald)' }};">
+          <div class="gauge-label">
+            <div class="gauge-pct">{{ confidence }}%</div>
+            <div class="gauge-sub">{{ 'risk' if prediction == 1 else 'retained' }}</div>
+          </div>
+        </div>
+
+        <div class="verdict {{ 'leave' if prediction == 1 else 'stay' }}">{{ result }}</div>
+        <div class="verdict-sub">
+          {% if prediction == 1 %}
+            The model estimates a {{ confidence }}% probability this employee will leave.
+          {% else %}
+            The model is {{ confidence }}% confident this employee will stay.
+          {% endif %}
+        </div>
+
+        <div style="width: 100%; max-width: 480px; text-align: left;">
+          <h2 style="font-family: var(--font-display); font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">
+            Top factors the model weighs most heavily
+          </h2>
+          {% for name, score in top_factors %}
+          <div class="factor-row">
+            <div class="factor-name">{{ name }}</div>
+            <div class="factor-bar-track">
+              <div class="factor-bar-fill" style="width: {{ (score * 100 / top_factors[0][1]) }}%;"></div>
+            </div>
+            <div class="factor-score">{{ score }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <a href="/" class="back-link">← Run another prediction</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
